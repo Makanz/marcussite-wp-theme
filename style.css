@@ -1,0 +1,20 @@
+﻿/*  
+Theme Name: marcussite.se 4.0
+Theme URI: http://www.marcussite.se
+Description: My wp-theme
+Version: 4.0
+Author: Marcus Alsterfjord
+Author URI: http://www.marcussite.se
+*/
+
+ul, li {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+ol, ul {
+	list-style: none;
+}
