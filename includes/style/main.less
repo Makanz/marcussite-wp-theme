@@ -1,0 +1,220 @@
+@import url(http://fonts.googleapis.com/css?family=Sanchez);
+@import url(http://fonts.googleapis.com/css?family=Sintony:400,700);
+
+body {
+	background: url('../images/grid.png') #e4e3e4;
+}
+
+.affix {
+	top: 20px;
+}
+
+.top-item {
+	background: #FFF;
+	margin-bottom: 20px;
+	&.single {
+		background: none;
+		margin-bottom: 20px;
+	}
+}
+
+div.top-item div.container-fluid {
+	padding: 0px 20px 20px 20px;
+}
+
+div#wrapper {
+	position: relative;
+}
+div#wrapper div.row-fluid.single div.span4 {
+	overflow: hidden;
+}
+div#wrapper div.row-fluid.single div.span4 img {
+	min-height: 350px;
+	width: auto;
+	max-width: none;
+	margin-left: -70%;
+}
+div#wrapper div.row-fluid.top-item div.span8 img {
+	width: 100%;
+	height: auto;
+}
+div#wrapper div.row-fluid.single div.span8 {
+	position: relative;
+}
+div#wrapper div.row-fluid.single div.topimg img {
+	width: 100%;
+}
+div#wrapper div.content ul{
+	margin-bottom: 15px;
+	padding-left: 20px;
+}
+div#wrapper div.content ul li {
+	list-style: disc;
+
+}
+
+.news-item {
+	position: relative;
+	border: 1px solid #CCC;
+	background: #FFF;
+	width: 31%;
+	margin: 1%;
+}
+
+div.news-item div.container-fluid {
+	padding: 0px 20px 20px 20px;
+}
+
+a, a:hover {
+	color: #3fa757;
+}
+
+h1 {
+	font-size: 22px;
+	line-height: 26px;
+}
+
+h2 {
+	font-size: 18px;
+	line-height: 22px;
+}
+
+h1, h2, h3, h4 {
+	font-family: 'Sanchez', serif;
+}
+
+h1 a {
+	color: #000;
+}
+
+.date-style {
+	font-size: 11px;
+	color: #a19999;
+}
+
+p {
+	font-size: 14px;
+	line-height: 20px;
+	font-family: 'Sintony', sans-serif;
+	text-align: left;
+}
+
+div#menu ul {
+	float: right;
+	height: 40px;
+	line-height: 40px;
+}
+
+div#menu ul li {
+	float: left;
+	width: 40px;
+	overflow: hidden;
+	text-indent: -999px;
+}
+
+div#menu ul li a {
+	display: block;
+	width: 100%;
+	height: 40px;
+	background: url('../images/icons.png') no-repeat;
+}
+
+div#sidebar {
+	padding-top: 20px;
+}
+
+.general {
+	background: #8dc63f;
+	a {
+		background-position: 0px !important;
+	}
+}
+.travel {
+	background: #91193d;
+	a {
+		background-position: -40px !important;
+	}
+}
+.tech {
+	background: #f58220;
+	a {
+		background-position: -80px !important;;
+	}
+}
+.news {
+	background: #00b4d4;
+	a {
+		background-position: -120px !important;
+	}
+}
+.photo {
+	background: #007659;
+    a {
+		background-position: -160px !important;
+	}
+}
+
+.catIcon {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 40px;
+	height: 40px;
+}
+
+.catIcon a {
+	display: block;
+	width: 100%;
+	height: 40px;
+	background: url('../images/icons.png') no-repeat;
+}
+
+#s { width: 95%; }
+#searchsubmit { display: none; }
+
+form#commentform input#submit {
+	font-family: 'Sintony', sans-serif;
+	background-color: #8dc63f;
+	border: 0;
+	color: #FFF;
+	text-transform: uppercase;
+	padding: 5px 10px;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+#disqus_thread {
+	padding-top: 20px;
+}
+
+footer {
+	padding: 20px 0;
+}
+
+div#galleri {
+	position: relative;
+	overflow: hidden;
+	img {
+		display: block;
+		float: left;
+	}
+}
+
+
+/* RESPONSIVE */
+@media all and (max-width: 720px){
+	.news-item {
+		width: 47%;
+		margin: 1%;
+	}
+}
+
+@media all and (max-width: 500px){
+	.news-item {
+		width: 100%;
+		margin: 1% 0;
+	}
+	.news-item img {
+		width: 100%;
+	}
+}
