@@ -1,4 +1,4 @@
-marcussite-v4
+marcussite-wp-theme
 =============
 
-Wordpress Theme Version 4
+Wordpress Theme
