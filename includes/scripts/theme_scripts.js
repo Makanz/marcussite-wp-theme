@@ -1,63 +1,82 @@
 jQuery(document).ready(function($){
-	
-	$('#content').masonry({
-		itemSelector: '.news-item',
-		// set columnWidth a fraction of the container width
-		columnWidth: function( containerWidth ) {
-			console.log('containerWidth: ' + containerWidth);
-			if(containerWidth<700) {
-				columns = 2;
-			} else if(containerWidth<500) {
-				columns = 1;
-			} else {
-				columns = 3;
-			}
-			return containerWidth / columns;
-		}
-	});
-	
-	var spanWidth4 = 0;
-	var spanWidth8 = 0;
-	span4obj = $('div#wrapper div.row-fluid.single div.span4');
-	span8obj = $('div#wrapper div.row-fluid.single div.span8');
-	
-	$('div#wrapper div.row-fluid.single div.span4').stop(true, true).hover( function() {
-		
-		spanWidth4 = $(span4obj).outerWidth();
-		spanWidth8 = $(span8obj).outerWidth();
-		spanWidth4 = "31.6239%";
-		spanWidth8 = "65.812%";
-		spanWidth4 = $(span4obj).css('width');
-		spanWidth8 = $(span8obj).css('width');
-		console.log(spanWidth4 + " | " + spanWidth8);
-		
-		$(span4obj).stop(true, true).animate({
-			width : spanWidth8
-		});
-		
-		$(span4obj).find('img').stop(true, true).animate({
-			marginLeft: "0%"
-		}, 'normal', 'swing');
-		
-		$(span8obj).stop(true, true).animate({
-			width : spanWidth4
-		});
-	}, function() {
-		$(span4obj).stop(true, true).animate({
-			width : spanWidth4
-		}, function() {
-			$(this).removeAttr('style');
-		});
-		
-		$(span4obj).find('img').stop(true, true).animate({
-			marginLeft: "-70%"
-		}, 'normal', 'swing');
-		
-		$(span8obj).stop(true, true).animate({
-			width : spanWidth8
-		}, function() {
-			$(this).removeAttr('style');
-		});
-	});
+
+    // Variables
+    var $container = $('#content');
+
+	$('div#menu ul li').mouseleave(function(){
+		$(this).stop().animate({ paddingTop: '0' }, 100);
+    }).mouseenter(function(){
+        $(this).animate({ paddingTop: '5px' }, 250);
+    });
+
+    $('div.news-item').mouseleave(function(){
+		$(this).stop().animate({ top: tVal }, 100);
+    }).mouseenter(function(){
+        tVal = $(this).css('top');
+        $(this).animate({ top: "-=5px" }, 250);
+    });
+
+	$('#content').imagesLoaded( function() {
+
+        $('#content').masonry({
+            //isAnimated: false,
+            // columnWidth: 310,
+            itemSelector: '.news-item',
+            columnWidth: '.news-item',
+            transitionDuration: 0
+        });
+
+		$('.catIcon').hide();
+		$('.catIcon').fadeIn('fast');
+
+    });
+
+    var infiniScrollPage = 1;
+    var killScroll = false;
+    var postID = 0;
+
+    $(window).scroll(function() {
+        if (killScroll == false) {
+            if($(window).scrollTop() + $(window).height() >= $(document).height()-($container.find('div.news-item').height()*2)) {
+                killScroll = true;
+                $container.find('.news-item.fade').removeClass('fade').removeClass('in');
+                // Load more items
+                //console.log("Show more posts");
+                infiniScrollPage++;
+
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    cache: false,
+                    data: {
+                        action: 'LoadMorePosts',
+                        currentPage: infiniScrollPage,
+                        postID: postID
+                    },
+                    success: function(data, textStatus, XMLHttpRequest){
+                        $('#content').append( data );
+                        $('#content').imagesLoaded(function() {
+                        $('#content').masonry('reloadItems');
+                        $('#content').masonry( 'layout' );
+                        //$('#content').find('.news-item.fade').addClass('in');
+                        $('#content').find('.news-item').addClass('animate');
+                            killScroll = false;
+                        });
+
+                        $('div.news-item').mouseleave(function(){
+                            $(this).stop().animate({ top: tVal }, 100);
+                        }).mouseenter(function(){
+                            tVal = $(this).css('top');
+                            $(this).animate({ top: "-=5px" }, 250);
+                        });
+                    },
+                    error: function(MLHttpRequest, textStatus, errorThrown){
+                        alert(errorThrown);
+                    }
+                });
+
+            }
+        }
+    });
 
 });

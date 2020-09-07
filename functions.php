@@ -7,56 +7,23 @@
 		
 		// Register style:
 		wp_register_style('bootstrap', get_bloginfo('stylesheet_directory').'/includes/style/bootstrap.min.css');
-		wp_register_style('bootstrap_responsive', get_bloginfo('stylesheet_directory').'/includes/style/bootstrap-responsive.min.css');
-		wp_register_style('themestyle', get_bloginfo('stylesheet_url'));
 		wp_register_style('mainstyle', get_bloginfo('stylesheet_directory').'/includes/style/main.css');
-		
+
 		// Register scripts:
-		wp_register_script('jquery', get_bloginfo('stylesheet_directory').'/includes/scripts/jquery-1.9.1.min.js', array('jquery'));
-		wp_register_script('bootstrap', get_bloginfo('stylesheet_directory').'/includes/scripts/bootstrap.min.js', array('jquery'));
-		wp_register_script('masonry', get_bloginfo('stylesheet_directory').'/includes/scripts/jquery.masonry.min.js', array('jquery'));
+		wp_register_script('masonry', '//cdnjs.cloudflare.com/ajax/libs/masonry/2.1.08/jquery.masonry.min.js', array('jquery'));
+		wp_register_script('imagesloaded', '//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js', array('jquery'));
 		wp_register_script('themescript', get_bloginfo('stylesheet_directory').'/includes/scripts/theme_scripts.js', array('jquery'));
 		
 		// Styles:
 		wp_enqueue_style('bootstrap');
-		wp_enqueue_style('bootstrap_responsive');
-		wp_enqueue_style('themestyle');
 		wp_enqueue_style('mainstyle');
 
 		// Scripts:
-		wp_enqueue_script('jquery');
-		wp_enqueue_script('bootstrap');
 		wp_enqueue_script('masonry');
+		wp_enqueue_script('imagesloaded');
 		wp_enqueue_script('themescript');
 		
 	}
-	/*
-	add_action('init', 'register_custom_menu');
-	
-	function register_custom_menu() {
-		register_nav_menu('custom_menu', __('Huvudmeny'));
-	}
-	
-	if ( function_exists('register_sidebar') )
-		register_sidebar(array(
-			'name' => 'Right sidebar',
-			'description' => 'Widgets in this area will be shown on the right-hand side.',
-			'before_widget' => '',
-			'after_widget' => '',
-			'before_title' => '<h2>',
-			'after_title' => '</h2>',
-	));
-	
-	if ( function_exists('register_sidebar') )
-		register_sidebar(array(
-			'name' => 'Footer',
-			'description' => 'Widgets in this area will be shown in the footer.',
-			'before_widget' => '',
-			'after_widget' => '',
-			'before_title' => '<h2>',
-			'after_title' => '</h2>',
-	));
-	*/
 	
 	if ( function_exists( 'add_theme_support' ) ) {
 		add_theme_support( 'post-thumbnails' );
@@ -64,8 +31,11 @@
 	}
 	
 	if ( function_exists( 'add_image_size' ) ) { 
-		add_image_size( 'item-thumb', 300, 9999 ); // Item Thumbnail Width 304px
-		add_image_size( 'fullsize', 1280, 720, true ); // 1280x720 Cropped 
+		add_image_size( 'old-size_one', 390, 390 ); // Old image size
+		//add_image_size( 'old-size_two', 390, 390 ); // Old image size
+
+		add_image_size( 'item-thumb', 300, 9999 ); // Item Thumbnail Width 300px
+		add_image_size( 'fullsize', 1280, 720, true ); // 1280x720 Cropped
 	}
 	
 	add_shortcode( 'fileDateEdit', 'fileDateEdit_func' );
@@ -76,11 +46,13 @@
 			'filename' => 'something',
 		), $atts ) );
 		
-		$filename = "/var/www/marcussite/wp-content/uploads/downloads/garmin/{$filename}";
+		$filename = "/home/u/u1409896/www/wp-content/uploads/downloads/garmin/{$filename}";
 		if (file_exists($filename)) {
 			return date("Y-m-d H:i:s", filemtime($filename)+3600)."<br/>Storlek: ".round((filesize($filename)/1048576))." mb";
 		}
 	}
+
+
 	add_filter( 'post_thumbnail_html', 'remove_thumbnail_dimensions', 10, 3 );
 	
 	function remove_thumbnail_dimensions( $html, $post_id, $post_image_id ) {
@@ -96,7 +68,7 @@
 		if (count($excerpt)>=$limit) {
 			array_pop($excerpt);
 			$excerpt = implode(" ",$excerpt).'...';
-			$excerpt .= '<p><a href="'.get_permalink($post->ID).'">Läs mer</a></p>';
+			$excerpt .= '<br/><a href="'.get_permalink($post->ID).'">Läs mer!</a>';
 		} else {
 			$excerpt = implode(" ",$excerpt);
 		}
@@ -127,7 +99,58 @@
 			1179 => "photo"
 		);
 		
-		echo '<div class="catIcon '.$catArray[$categories[0]->cat_ID].'"><a href="'.get_bloginfo("url").'/category/'.$categories[0]->slug.'"></a></div>';
+		echo '<div class="catIcon '.$catArray[$categories[0]->cat_ID].'"><a href="'.get_bloginfo("url").'/kategori/'.$categories[0]->slug.'"></a></div>';
 	}
-	
+
+	function LoadMorePosts(){
+
+		//echo "PostID: ".$_POST['postID'];
+		$currentCategorie = $categories = get_the_category($_POST['postID']);
+		//echo $currentCategorie[0]->cat_ID;
+		//$display_count = 6;
+		//$offset = ( $page - 1 ) * $display_count;
+
+		$content_query = new WP_Query(array(
+			'post__not_in' => array($_POST['postID']),
+			'post_type' => 'post',
+			'post_status' => 'publish',
+			'posts_per_page' => 7,
+			'paged' => $_POST["currentPage"],
+			'cat' => $currentCategorie[0]->cat_ID
+		));
+
+		if( $content_query->have_posts() ) {
+		?>
+			<?php
+			while ($content_query->have_posts()) : $content_query->the_post(); ?>
+				<div class="news-item fade">
+					<?php generateIcon(); ?>
+					<?php if(has_post_thumbnail()){ ?>
+						<a href="<?php the_permalink() ?>">
+							<?php the_post_thumbnail('item-thumb'); ?>
+						</a>
+					<?php } ?>
+					<div class="col-md-12">
+						<h2><a href="<?php the_permalink() ?>"><?php the_title(); ?></a></h2>
+						<span class="date-style"><?php the_time('j F, Y'); ?></span>
+						<?php echo '<p>'.excerpt(20).'</p>'; ?>
+						<?php
+						$comments_img_link= ' ';
+						comments_popup_link($comments_img_link .'0 Kommentarer', $comments_img_link .'1 Kommentar', $comments_img_link . '% Kommentarer');
+						?>
+					</div>
+				</div>
+			<?php
+			endwhile;
+		}
+		wp_reset_postdata();  // Restore global post data stomped by the_post().
+
+
+		// Return the String
+		die($results);
+	}
+	// creating Ajax call for WordPress
+	add_action( 'wp_ajax_nopriv_LoadMorePosts', 'LoadMorePosts' );
+	add_action( 'wp_ajax_LoadMorePosts', 'LoadMorePosts' );
+
 ?>
